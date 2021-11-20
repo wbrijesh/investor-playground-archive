@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { Formik } from "formik";
@@ -24,7 +25,7 @@ export default function Home() {
     if (data.length > 0) {
       setUserBank(data[0]);
     } else {
-      setUserBank("no account found");
+      setUserBank({ error: "no account found" });
     }
   };
 
@@ -52,7 +53,7 @@ export default function Home() {
       <br />
       {userBank && (
         <>
-          {userBank == "no account found" ? (
+          {userBank == { error: "no account found" } ? (
             <>
               <p>No bank account found!</p>
               <button
@@ -95,12 +96,11 @@ export default function Home() {
                 )}
               </Formik>
               <br />
-              <a
-                href="/invest"
-                style={{ color: "blue", textDecoration: "underline" }}
-              >
-                Start Making Investments
-              </a>
+              <Link href="/invest">
+                <a style={{ color: "blue", textDecoration: "underline" }}>
+                  Start Making Investments
+                </a>
+              </Link>
             </>
           )}
         </>

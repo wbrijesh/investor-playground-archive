@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { Formik } from "formik";
@@ -24,7 +25,7 @@ function PortfolioPage() {
       setUserBank(data[0]);
       checkUserInvestments();
     } else {
-      setUserBank("no account found");
+      setUserBank({ error: "no account found" });
     }
   };
 
@@ -35,7 +36,7 @@ function PortfolioPage() {
       .eq("user_id", user.id);
     console.log("investment data:", data);
     if (data.length == 0) {
-      setUserInvestments("no investments found");
+      setUserInvestments({ error: "no investments found" });
     } else {
       setUserInvestments(data);
     }
