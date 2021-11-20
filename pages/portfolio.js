@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { Formik } from "formik";
@@ -25,7 +24,7 @@ function PortfolioPage() {
       setUserBank(data[0]);
       checkUserInvestments();
     } else {
-      setUserBank({ error: "no account found" });
+      setUserBank("no account found");
     }
   };
 
@@ -36,7 +35,7 @@ function PortfolioPage() {
       .eq("user_id", user.id);
     console.log("investment data:", data);
     if (data.length == 0) {
-      setUserInvestments({ error: "no investments found" });
+      setUserInvestments("no investments found");
     } else {
       setUserInvestments(data);
     }
@@ -82,6 +81,8 @@ function PortfolioPage() {
     deduct(values.amount * data["Global Quote"]["05. price"] + values.charge);
   };
 
+  userInvestments && console.log("userInvestments: ", userInvestments);
+
   return (
     <>
       {
@@ -91,42 +92,46 @@ function PortfolioPage() {
           <>
             <p>Portfolio Page</p>
             <br />
-            {userInvestments.map((investment) => {
-              return (
-                <>
-                  <div className="flex">
-                    <p>
-                      {investment.company} ({investment.amount})
-                    </p>
-                    <br />
-                    <Formik
-                      initialValues={{
-                        amount: 0,
-                        price: 0,
-                        charge: 0,
-                        investment_type: "sell",
-                        company: investment.company,
-                      }}
-                      onSubmit={(values) => {
-                        sellStock(values);
-                      }}
-                    >
-                      {({ handleSubmit, handleChange, values }) => (
-                        <form onSubmit={handleSubmit}>
-                          <input
-                            type="number"
-                            name="amount"
-                            onChange={handleChange}
-                            value={values.amount}
-                          />
-                          <button type="submit">Sell</button>
-                        </form>
-                      )}
-                    </Formik>
-                  </div>
-                </>
-              );
-            })}
+            {userInvestments !== "no investments found" ? (
+              userInvestments.map((investment) => {
+                return (
+                  <>
+                    <div className="flex">
+                      <p>
+                        {investment.company} ({investment.amount})
+                      </p>
+                      <br />
+                      <Formik
+                        initialValues={{
+                          amount: 0,
+                          price: 0,
+                          charge: 0,
+                          investment_type: "sell",
+                          company: investment.company,
+                        }}
+                        onSubmit={(values) => {
+                          sellStock(values);
+                        }}
+                      >
+                        {({ handleSubmit, handleChange, values }) => (
+                          <form onSubmit={handleSubmit}>
+                            <input
+                              type="number"
+                              name="amount"
+                              onChange={handleChange}
+                              value={values.amount}
+                            />
+                            <button type="submit">Sell</button>
+                          </form>
+                        )}
+                      </Formik>
+                    </div>
+                  </>
+                );
+              })
+            ) : (
+              <p>No investments found</p>
+            )}
           </>
         ))
       }
